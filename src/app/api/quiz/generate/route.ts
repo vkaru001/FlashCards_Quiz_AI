@@ -6,6 +6,7 @@ import {HumanMessage} from "@langchain/core/messages"
 import { PDFLoader } from "langchain/document_loaders/fs/pdf"
 import {JsonOutputFunctionsParser} from "langchain/output_parsers"
 
+import saveQuiz from "./saveToDb";
 
 export async function POST(req:NextRequest){ 
     const body = await req.formData();
@@ -80,6 +81,8 @@ export async function POST(req:NextRequest){
         })
         const result = await runnable.invoke([message])
         console.log(result);
+
+        const {quizId} = await saveQuiz(result.quiz);
 
         return NextResponse.json({ 
             message: "created successfully"}, 
